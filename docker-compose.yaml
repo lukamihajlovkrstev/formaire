@@ -1,0 +1,59 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: packages/frontend/Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./packages/frontend/src:/app/packages/frontend/src
+      - ./packages/shared:/app/packages/shared
+      - /app/packages/frontend/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:4000
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: packages/backend/Dockerfile.dev
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./packages/backend/src:/app/packages/backend/src
+      - ./packages/shared:/app/packages/shared
+      - /app/packages/backend/node_modules
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/formaire
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo:8.2.3-noble
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app-network   
+
+  mongo-management:
+    image: mongo-express:1.0.2-20-alpine3.19
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+volumes:
+  mongo_data:
+
+networks:
+  app-network:
+    driver: bridge
