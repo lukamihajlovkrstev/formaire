@@ -1,11 +1,16 @@
 import { Router } from 'express';
 import { AuthService } from '../services/auth.service';
 import { callbackQuerySchema } from '../types/auth.types';
+import { UserService } from '../services/user.service';
+import { SessionService } from '../services/session.service';
+import { protect } from '../middleware/auth.middleware';
 
 const router = Router();
 const authService = new AuthService();
+const userService = new UserService();
+const sessionService = new SessionService();
 
-router.get('/login', (req, res, next) => {
+router.get('/login', async (req, res, next) => {
   try {
     const authUrl = authService.getAuthorizationUrl();
     res.redirect(authUrl);
@@ -24,11 +29,17 @@ router.get('/callback', async (req, res, next) => {
       tokenResponse.access_token,
     );
 
-    // console.log(googleUser);
+    console.log(googleUser);
+    const user = await userService.create(googleUser);
+    const session = await sessionService.create(user);
 
-    // TODO: save to database
-
-    // TODO: create session
+    res.cookie('session', session, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      domain: 'localhost',
+    });
 
     res.redirect(process.env.CLIENT_URL!);
   } catch (error) {
@@ -36,11 +47,22 @@ router.get('/callback', async (req, res, next) => {
   }
 });
 
-router.get('/logout', () => {
-  // TODO: implement session delete
+router.get('/logout', protect, async (req, res, next) => {
+  try {
+    await sessionService.destroy(req.session!._id);
+    res.clearCookie('session');
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
 });
-router.get('/me', () => {
-  // TODO: implement user info fetch
+
+router.get('/me', protect, async (req, res, next) => {
+  try {
+    res.json(req.user);
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default router;

@@ -1,9 +1,16 @@
 import { createApp } from './app.js';
 import { database } from './lib/database.js';
+import { SessionService } from './services/session.service.js';
+import { UserService } from './services/user.service.js';
 
 const startServer = async () => {
   try {
     await database.connect();
+
+    const userService = new UserService();
+    const sessionService = new SessionService();
+    await userService.ensureIndexes();
+    await sessionService.ensureIndexes();
 
     const app = createApp();
 
