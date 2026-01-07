@@ -7,6 +7,13 @@ export class FormService {
     return database.get().collection<Form>('forms');
   }
 
+  async find(formId: string, userId: ObjectId): Promise<Form | null> {
+    return await this.collection.findOne({
+      _id: new ObjectId(formId),
+      ownerId: userId,
+    });
+  }
+
   async create(title: string, ownerId: ObjectId): Promise<Form> {
     const now = new Date();
 
@@ -20,6 +27,23 @@ export class FormService {
 
     await this.collection.insertOne(form);
     return form;
+  }
+
+  async update(
+    title: string,
+    formId: string,
+    userId: ObjectId,
+  ): Promise<Form | null> {
+    return await this.collection.findOneAndUpdate(
+      { _id: new ObjectId(formId), ownerId: userId },
+      {
+        $set: {
+          title: title,
+          updatedAt: new Date(),
+        },
+      },
+      { returnDocument: 'after' },
+    );
   }
 
   async ensureIndexes(): Promise<void> {
