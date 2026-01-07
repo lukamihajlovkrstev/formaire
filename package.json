@@ -7,6 +7,11 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
+    "@tanstack/router-devtools": "^1.145.7",
+    "@tanstack/router-plugin": "^1.145.7",
     "prettier": "^3.7.4"
+  },
+  "dependencies": {
+    "@tanstack/react-router": "^1.145.7"
   }
 }
