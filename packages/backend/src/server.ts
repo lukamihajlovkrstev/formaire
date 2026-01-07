@@ -1,7 +1,10 @@
 import { createApp } from './app.js';
+import { database } from './lib/database.js';
 
 const startServer = async () => {
   try {
+    await database.connect();
+
     const app = createApp();
 
     const PORT = parseInt(process.env.PORT!);
@@ -17,10 +20,12 @@ const startServer = async () => {
 
     process.on('SIGTERM', async () => {
       console.log('\n🛑 Shutting down gracefully...');
+      await database.disconnect();
       process.exit(0);
     });
   } catch (error) {
     console.error('Failed to start server:', error);
+    await database.disconnect();
     process.exit(1);
   }
 };
