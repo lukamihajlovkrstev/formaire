@@ -16,7 +16,6 @@ export const protect = async (
     }
 
     const session = await sessionService.get(id);
-    console.log(session);
     if (!session) {
       return res.status(401).json({ error: 'Unauthorized' });
     }

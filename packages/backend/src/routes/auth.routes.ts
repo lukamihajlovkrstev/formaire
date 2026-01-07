@@ -29,7 +29,6 @@ router.get('/callback', async (req, res, next) => {
       tokenResponse.access_token,
     );
 
-    console.log(googleUser);
     const user = await userService.create(googleUser);
     const session = await sessionService.create(user);
 
