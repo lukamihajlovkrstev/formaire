@@ -14,6 +14,13 @@ export class FormService {
     });
   }
 
+  async delete(formId: string, userId: ObjectId): Promise<undefined> {
+    await this.collection.deleteOne({
+      _id: new ObjectId(formId),
+      ownerId: userId,
+    });
+  }
+
   async create(title: string, ownerId: ObjectId): Promise<Form> {
     const now = new Date();
 

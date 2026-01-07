@@ -33,7 +33,7 @@ router.put('/:formId', protect, async (req, res, next) => {
     const { formId } = formIdParamSchema.parse(req.params);
     const body = updateFormSchema.parse(req.body);
 
-    const exists = formService.find(formId, req.user!._id!);
+    const exists = await formService.find(formId, req.user!._id!);
     if (!exists) {
       res.status(404).json({ error: 'Form not found' });
       return;
@@ -46,6 +46,30 @@ router.put('/:formId', protect, async (req, res, next) => {
     }
 
     res.json(result);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      res
+        .status(400)
+        .json({ error: 'Validation error', details: error.issues });
+      return;
+    }
+    res.status(500).json({ error: 'Failed to update form' });
+  }
+});
+
+router.delete('/:formId', protect, async (req, res, next) => {
+  try {
+    const { formId } = formIdParamSchema.parse(req.params);
+
+    const exists = await formService.find(formId, req.user!._id!);
+    if (!exists) {
+      res.status(404).json({ error: 'Form not found' });
+      return;
+    }
+
+    await formService.delete(formId, req.user!._id!);
+
+    res.status(204).send();
   } catch (error) {
     if (error instanceof ZodError) {
       res
