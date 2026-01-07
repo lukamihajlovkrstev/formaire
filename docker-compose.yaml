@@ -8,7 +8,6 @@ services:
     volumes:
       - ./packages/frontend/src:/app/packages/frontend/src
       - ./packages/shared:/app/packages/shared
-      - /app/packages/frontend/node_modules
     environment:
       - VITE_API_URL=http://localhost:4000
     networks:
@@ -23,7 +22,6 @@ services:
     volumes:
       - ./packages/backend/src:/app/packages/backend/src
       - ./packages/shared:/app/packages/shared
-      - /app/packages/backend/node_modules
     environment:
       - MONGO_URI=mongodb://mongo:27017/formaire
     env_file:
