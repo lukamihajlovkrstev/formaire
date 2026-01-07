@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { protect } from '../middleware/auth.middleware';
 import {
   createFormSchema,
-  Form,
   formIdParamSchema,
   updateFormSchema,
 } from '../types/form.types';
@@ -12,7 +11,16 @@ import { FormService } from '../services/form.service';
 const router = Router();
 const formService = new FormService();
 
-router.post('/', protect, async (req, res, next) => {
+router.get('/', protect, async (req, res) => {
+  try {
+    const result = await formService.get(req.user!._id!);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to create form' });
+  }
+});
+
+router.post('/', protect, async (req, res) => {
   try {
     const body = createFormSchema.parse(req.body);
     const result = await formService.create(body.title, req.user!._id!);
@@ -28,7 +36,7 @@ router.post('/', protect, async (req, res, next) => {
   }
 });
 
-router.put('/:formId', protect, async (req, res, next) => {
+router.put('/:formId', protect, async (req, res) => {
   try {
     const { formId } = formIdParamSchema.parse(req.params);
     const body = updateFormSchema.parse(req.body);
@@ -57,7 +65,7 @@ router.put('/:formId', protect, async (req, res, next) => {
   }
 });
 
-router.delete('/:formId', protect, async (req, res, next) => {
+router.delete('/:formId', protect, async (req, res) => {
   try {
     const { formId } = formIdParamSchema.parse(req.params);
 

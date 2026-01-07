@@ -7,6 +7,13 @@ export class FormService {
     return database.get().collection<Form>('forms');
   }
 
+  async get(userId: ObjectId): Promise<Form[]> {
+    return await this.collection
+      .find({ ownerId: userId })
+      .sort({ createdAt: -1 })
+      .toArray();
+  }
+
   async find(formId: string, userId: ObjectId): Promise<Form | null> {
     return await this.collection.findOne({
       _id: new ObjectId(formId),
