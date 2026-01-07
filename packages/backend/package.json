@@ -3,7 +3,7 @@
   "packageManager": "pnpm@10.27.0",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch src/server.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },

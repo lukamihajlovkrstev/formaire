@@ -12,6 +12,7 @@ routeTree.gen.ts
 .tanstack
 dist
 dist-ssr
+.env
 *.local
 
 # Editor directories and files
