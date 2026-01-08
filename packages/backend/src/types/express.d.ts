@@ -1,4 +1,4 @@
-import { User } from './auth.types';
+import { User } from '@formaire/shared';
 import { Session } from './session.types';
 
 declare global {

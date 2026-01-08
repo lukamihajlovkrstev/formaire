@@ -1,6 +1,7 @@
 import { Collection, ObjectId } from 'mongodb';
 import { database } from '../lib/database';
-import { User, GoogleUserInfo } from '../types/auth.types';
+import { GoogleUserInfo } from '../types/auth.types';
+import { User } from '@formaire/shared';
 
 export class UserService {
   private get collection(): Collection<User> {

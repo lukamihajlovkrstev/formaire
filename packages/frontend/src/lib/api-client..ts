@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL;
+const API_BASE = `${import.meta.env.VITE_API_URL}/api`;
 
 export async function api(endpoint: string, options: RequestInit = {}) {
   const config: RequestInit = {

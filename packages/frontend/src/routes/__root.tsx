@@ -1,13 +1,17 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router';
+import { Outlet, createRootRouteWithContext } from '@tanstack/react-router';
+import type { User } from '@formaire/shared';
 
-export const Route = createRootRoute({
-  component: Root,
-});
+interface RouterContext {
+  auth: {
+    isAuthenticated: boolean;
+    user: User | null;
+  };
+}
 
-function Root() {
-  return (
+export const Route = createRootRouteWithContext<RouterContext>()({
+  component: () => (
     <>
       <Outlet />
     </>
-  );
-}
+  ),
+});

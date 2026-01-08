@@ -29,7 +29,6 @@ router.get('/callback', async (req, res, next) => {
       tokenResponse.access_token,
     );
 
-    console.log(googleUser);
     const user = await userService.create(googleUser);
     const session = await sessionService.create(user);
 
@@ -38,6 +37,15 @@ router.get('/callback', async (req, res, next) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 30 * 24 * 60 * 60 * 1000,
+      domain: 'localhost',
+    });
+
+    res.cookie('hint', 'true', {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      path: '/',
       domain: 'localhost',
     });
 
@@ -51,6 +59,7 @@ router.get('/logout', protect, async (req, res, next) => {
   try {
     await sessionService.destroy(req.session!._id);
     res.clearCookie('session');
+    res.clearCookie('hint');
     res.status(204).send();
   } catch (error) {
     next(error);

@@ -9,7 +9,7 @@ import {
 import { Field, FieldDescription, FieldGroup } from '@/components/ui/field';
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/login')({
+export const Route = createFileRoute('/_guest/login')({
   component: Login,
 });
 
@@ -36,8 +36,7 @@ function Login() {
                     <Button
                       type="button"
                       onClick={() => {
-                        const apiUrl = import.meta.env.VITE_API_URL;
-                        window.location.href = `${apiUrl}/api/auth/login`;
+                        window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/login`;
                       }}
                     >
                       <svg

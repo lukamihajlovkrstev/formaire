@@ -2,7 +2,7 @@ import { Collection } from 'mongodb';
 import { database } from '../lib/database';
 import { Session } from '../types/session.types';
 import { nanoid } from 'nanoid';
-import { User } from '../types/auth.types';
+import { User } from '@formaire/shared';
 
 export class SessionService {
   private readonly SESSION_TTL = 30 * 24 * 60 * 60 * 1000;
