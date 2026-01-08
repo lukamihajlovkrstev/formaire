@@ -33,7 +33,13 @@ function Login() {
               <form>
                 <FieldGroup>
                   <Field>
-                    <Button type="button">
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        const apiUrl = import.meta.env.VITE_API_URL;
+                        window.location.href = `${apiUrl}/api/auth/login`;
+                      }}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
