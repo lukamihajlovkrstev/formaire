@@ -1,4 +1,4 @@
-import { User } from './auth.types';
+import { User } from '@formaire/shared';
 
 export interface Session {
   _id: string;

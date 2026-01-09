@@ -40,6 +40,15 @@ router.get('/callback', async (req, res, next) => {
       domain: 'localhost',
     });
 
+    res.cookie('hint', 'true', {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      path: '/',
+      domain: 'localhost',
+    });
+
     res.redirect(process.env.CLIENT_URL!);
   } catch (error) {
     next(error);
@@ -50,6 +59,7 @@ router.get('/logout', protect, async (req, res, next) => {
   try {
     await sessionService.destroy(req.session!._id);
     res.clearCookie('session');
+    res.clearCookie('hint');
     res.status(204).send();
   } catch (error) {
     next(error);
