@@ -1,11 +1,8 @@
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router';
-import type { User } from '@formaire/shared';
+import type { QueryClient } from '@tanstack/react-query';
 
 interface RouterContext {
-  auth: {
-    isAuthenticated: boolean;
-    user: User | null;
-  };
+  queryClient: QueryClient;
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
