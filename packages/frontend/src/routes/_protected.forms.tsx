@@ -1,5 +1,15 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -19,15 +29,52 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { createFileRoute } from '@tanstack/react-router';
-import { Command, LogOut, Plus, Search } from 'lucide-react';
+import { LogOut, Plus, Search } from 'lucide-react';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/_protected/forms')({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const [open, setOpen] = useState(false);
+
   return (
     <SidebarProvider>
+      <Dialog open={open}>
+        <DialogContent
+          className="sm:max-w-106.25"
+          onClose={() => setOpen(false)}
+        >
+          <DialogHeader>
+            <DialogTitle>Name your collection</DialogTitle>
+            <DialogDescription>
+              This title will be used to organize and group all responses
+              submitted to this form.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4">
+            <div className="grid gap-3">
+              <Label htmlFor="name-1">Title</Label>
+              <Input
+                id="name-1"
+                name="name"
+                defaultValue="Example collection"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button onClick={() => setOpen(false)} variant="outline">
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button type="submit" onClick={() => setOpen(false)}>
+              Save changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <Sidebar>
         <SidebarHeader>
           <div className="flex gap-2 align-middle my-2">
@@ -54,7 +101,11 @@ function RouteComponent() {
                 />
                 <Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none" />
               </div>
-              <Button variant="outline" size="icon-sm">
+              <Button
+                variant="outline"
+                size="icon-sm"
+                onClick={() => setOpen(true)}
+              >
                 <Plus />
               </Button>
             </SidebarGroupContent>
