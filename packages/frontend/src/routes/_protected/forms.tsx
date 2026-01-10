@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { getForms } from '@/queries/forms';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { createForm, getForms } from '@/queries/forms';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -40,6 +40,7 @@ import { useState } from 'react';
 import { sessionQuery } from '@/queries/auth';
 import { getInitials } from '@/lib/utils';
 import { OpenContext } from '@/components/providers';
+import { queryClient } from '@/lib/query-client';
 
 export const Route = createFileRoute('/_protected/forms')({
   component: FormsLayout,
@@ -61,6 +62,7 @@ export const Route = createFileRoute('/_protected/forms')({
 
 function FormsLayout() {
   const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState('');
   const params = useParams({ strict: false });
   const id = params.id as string | undefined;
   const navigate = useNavigate();
@@ -74,6 +76,25 @@ function FormsLayout() {
     queryKey: ['auth', 'session'],
     queryFn: sessionQuery,
   });
+
+  const createMutation = useMutation({
+    mutationFn: createForm,
+    onSuccess: (newForm) => {
+      queryClient.invalidateQueries({ queryKey: ['forms'] });
+      setOpen(false);
+      navigate({
+        to: '/forms/$id',
+        params: { id: newForm._id.toString() },
+      });
+    },
+  });
+
+  const create = () => {
+    setOpen(false);
+    createMutation.mutate({
+      title,
+    });
+  };
 
   return (
     <OpenContext.Provider value={{ open, setOpen }}>
@@ -96,7 +117,8 @@ function FormsLayout() {
                 <Input
                   id="name-1"
                   name="name"
-                  defaultValue="Example collection"
+                  value={title}
+                  onChange={(event) => setTitle(event.target.value)}
                 />
               </div>
             </div>
@@ -106,7 +128,7 @@ function FormsLayout() {
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit" onClick={() => setOpen(false)}>
+              <Button type="submit" onClick={create}>
                 Save changes
               </Button>
             </DialogFooter>

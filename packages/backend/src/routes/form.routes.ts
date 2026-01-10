@@ -1,12 +1,9 @@
 import { Router } from 'express';
 import { protect } from '../middleware/auth.middleware';
-import {
-  createFormSchema,
-  formIdParamSchema,
-  updateFormSchema,
-} from '../types/form.types';
+import { formIdParamSchema } from '../types/form.types';
 import { ZodError } from 'zod';
 import { FormService } from '../services/form.service';
+import { createFormSchema, updateFormSchema } from '@formaire/shared';
 
 const router = Router();
 const formService = new FormService();
