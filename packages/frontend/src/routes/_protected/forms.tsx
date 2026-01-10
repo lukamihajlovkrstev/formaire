@@ -37,7 +37,7 @@ import {
   useParams,
 } from '@tanstack/react-router';
 import { EditIcon, Info, Loader2, LogOut, Plus, Search } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { logoutMutation, sessionQuery } from '@/queries/auth';
 import { getInitials } from '@/lib/utils';
 import { OpenContext } from '@/components/providers';
@@ -64,6 +64,7 @@ export const Route = createFileRoute('/_protected/forms')({
 function FormsLayout() {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('');
+  const [search, setSearch] = useState('');
   const [target, setTarget] = useState<null | string>(null);
 
   const params = useParams({ strict: false });
@@ -79,6 +80,14 @@ function FormsLayout() {
     queryKey: ['auth', 'session'],
     queryFn: sessionQuery,
   });
+
+  const filtered = useMemo(() => {
+    if (!forms) return [];
+
+    return forms.filter((form) =>
+      form.title.toLowerCase().includes(search.toLowerCase()),
+    );
+  }, [search, forms]);
 
   useEffect(() => {
     if (!open) {
@@ -203,6 +212,8 @@ function FormsLayout() {
                 <div className="relative w-full">
                   <SidebarInput
                     placeholder="Search forms..."
+                    value={search}
+                    onChange={(event) => setSearch(event.target.value)}
                     className="pl-8"
                   />
                   <Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50" />
@@ -223,7 +234,7 @@ function FormsLayout() {
             <SidebarGroup>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {forms?.map((x) => (
+                  {filtered?.map((x) => (
                     <SidebarMenuItem key={x._id.toString()}>
                       <SidebarMenuButton
                         isActive={x._id.toString() === id}
