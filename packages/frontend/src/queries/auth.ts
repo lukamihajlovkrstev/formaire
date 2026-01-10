@@ -6,5 +6,5 @@ export async function sessionQuery(): Promise<User> {
 }
 
 export async function logoutMutation() {
-  return api('/auth/logout', { method: 'POST' });
+  return api('/auth/logout', { method: 'GET' });
 }

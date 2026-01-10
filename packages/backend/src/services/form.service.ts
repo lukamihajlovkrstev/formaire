@@ -1,6 +1,6 @@
 import { Collection, ObjectId } from 'mongodb';
 import { database } from '../lib/database';
-import { Form } from '../types/form.types';
+import { Form } from '@formaire/shared';
 
 export class FormService {
   private get collection(): Collection<Form> {
