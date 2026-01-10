@@ -38,7 +38,7 @@ import {
 } from '@tanstack/react-router';
 import { EditIcon, Info, Loader2, LogOut, Plus, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { sessionQuery } from '@/queries/auth';
+import { logoutMutation, sessionQuery } from '@/queries/auth';
 import { getInitials } from '@/lib/utils';
 import { OpenContext } from '@/components/providers';
 import { queryClient } from '@/lib/query-client';
@@ -89,6 +89,14 @@ function FormsLayout() {
       return () => clearTimeout(timer);
     }
   }, [open]);
+
+  const logout = useMutation({
+    mutationFn: logoutMutation,
+    onSettled: async () => {
+      queryClient.clear();
+      navigate({ to: '/login', replace: true });
+    },
+  });
 
   const createMutation = useMutation({
     mutationFn: createForm,
@@ -162,7 +170,7 @@ function FormsLayout() {
                 <Button
                   type="submit"
                   disabled={isPending || !title.trim()}
-                  className="min-w-[100px]"
+                  className="min-w-25"
                 >
                   {isPending ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -262,7 +270,11 @@ function FormsLayout() {
                   </span>
                 </div>
               </div>
-              <Button size="icon-sm" variant="outline">
+              <Button
+                size="icon-sm"
+                variant="outline"
+                onClick={() => logout.mutate()}
+              >
                 <LogOut className="size-4" />
               </Button>
             </div>
