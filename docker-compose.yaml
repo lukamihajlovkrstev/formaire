@@ -21,7 +21,10 @@ services:
       - "4000:4000"
     volumes:
       - ./packages/backend/src:/app/packages/backend/src
-      - ./packages/shared:/app/packages/shared
+      - ./packages/shared/index.ts:/app/packages/shared/index.ts
+      - /app/node_modules
+      - /app/packages/backend/node_modules
+      - /app/packages/shared/node_modules
     environment:
       - MONGO_URI=mongodb://mongo:27017/formaire
     env_file:

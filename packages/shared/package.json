@@ -4,7 +4,10 @@
   "type": "module",
   "version": "1.0.0",
   "exports": {
-    ".": "./index.ts"
+    ".": {
+      "import": "./index.ts",
+      "types": "./index.ts"
+    }
   },
   "devDependencies": {
     "typescript": "^5.9.3"
