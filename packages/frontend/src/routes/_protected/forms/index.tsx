@@ -46,7 +46,7 @@ function RouteComponent() {
           <EmptyMedia variant="icon">
             <ListX />
           </EmptyMedia>
-          <EmptyTitle> No Forms Yet</EmptyTitle>
+          <EmptyTitle> No forms yet</EmptyTitle>
           <EmptyDescription>
             Create your first form to start collecting submissions from your
             users.
@@ -54,7 +54,7 @@ function RouteComponent() {
         </EmptyHeader>
         <EmptyContent>
           <Button size="sm" onClick={() => setOpen(true)}>
-            Add data
+            Create form
           </Button>
         </EmptyContent>
       </Empty>
