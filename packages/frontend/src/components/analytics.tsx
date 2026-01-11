@@ -3,39 +3,30 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from './ui/dialog';
-import { Label } from '@radix-ui/react-label';
-import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { getPeakHours, getStats, getTimeline } from '@/queries/analytics';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Activity, Calendar, Clock, TrendingUp } from 'lucide-react';
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import { Bar, BarChart, XAxis, YAxis } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from './ui/chart';
 
 interface AnalyticsDialogProps {
   formId: string | undefined;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  deleteForm: (formId: string) => void;
 }
 
 export function AnalyticsDialog({
   formId,
   open,
   setOpen,
+  deleteForm,
 }: AnalyticsDialogProps) {
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['analytics', 'stats', formId],
@@ -58,8 +49,8 @@ export function AnalyticsDialog({
   const formattedTimeline = timeline
     ? Array.from({ length: 30 }, (_, i) => {
         const date = new Date();
-        date.setDate(date.getDate() - (29 - i)); // Start from 30 days ago
-        const dateString = date.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        date.setDate(date.getDate() - (29 - i));
+        const dateString = date.toISOString().split('T')[0];
 
         const existingData = timeline.find((item) => item._id === dateString);
         return {
@@ -269,7 +260,12 @@ export function AnalyticsDialog({
               Copy form link
             </Button>
           </DialogClose>
-          <Button type="button" className="min-w-25" variant="destructive">
+          <Button
+            type="button"
+            className="min-w-25"
+            variant="destructive"
+            onClick={() => deleteForm(formId as string)}
+          >
             Delete form
           </Button>
         </DialogFooter>

@@ -14,6 +14,10 @@ export async function createForm(data: CreateFormInput): Promise<Form> {
   return api('/forms', { method: 'POST', body: JSON.stringify(data) });
 }
 
+export async function deleteForm({ id }: { id: string }): Promise<Form> {
+  return api(`/forms/${id}`, { method: 'DELETE' });
+}
+
 export async function updateForm({
   id,
   data,

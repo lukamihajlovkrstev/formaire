@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { createForm, getForms, updateForm } from '@/queries/forms';
+import { createForm, deleteForm, getForms, updateForm } from '@/queries/forms';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -33,6 +33,7 @@ import {
 import {
   createFileRoute,
   Outlet,
+  redirect,
   useNavigate,
   useParams,
 } from '@tanstack/react-router';
@@ -129,6 +130,39 @@ function FormsLayout() {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: deleteForm,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['forms'] });
+      setOpenDetails(false);
+      if (forms != null && forms.length > 1) {
+        const remainingForms = forms.filter(
+          (form) => form._id.toString() !== id,
+        );
+
+        if (remainingForms.length > 0) {
+          const latestForm = remainingForms.sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+          )[0];
+
+          navigate({
+            to: '/forms/$id',
+            params: { id: latestForm._id.toString() },
+          });
+        } else {
+          navigate({ to: '/forms' });
+        }
+      } else {
+        navigate({ to: '/forms' });
+      }
+    },
+  });
+
+  const remove = (formId: string) => {
+    deleteMutation.mutate({ id: formId });
+  };
+
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   const submit = (e: React.FormEvent) => {
@@ -152,6 +186,7 @@ function FormsLayout() {
           formId={id as string}
           open={openDetails}
           setOpen={setOpenDetails}
+          deleteForm={remove}
         />
         <Dialog open={open} onOpenChange={(val) => !isPending && setOpen(val)}>
           <DialogContent className="sm:max-w-md">
