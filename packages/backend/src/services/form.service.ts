@@ -21,6 +21,13 @@ export class FormService {
     });
   }
 
+  async active(formId: string): Promise<Form | null> {
+    return await this.collection.findOne({
+      _id: new ObjectId(formId),
+      active: true,
+    });
+  }
+
   async delete(formId: string, userId: ObjectId): Promise<undefined> {
     await this.collection.deleteOne({
       _id: new ObjectId(formId),
@@ -35,6 +42,8 @@ export class FormService {
       _id: new ObjectId(),
       title: title,
       ownerId,
+      active: true,
+      count: 0,
       createdAt: now,
       updatedAt: now,
     };
@@ -61,6 +70,23 @@ export class FormService {
   }
 
   async ensureIndexes(): Promise<void> {
+    const exists = await database
+      .get()
+      .listCollections({
+        name: 'submissions',
+      })
+      .toArray();
+
+    if (exists.length === 0) {
+      await database.get().createCollection('submissions', {
+        timeseries: {
+          timeField: 'timestamp',
+          metaField: 'meta',
+          granularity: 'seconds',
+        },
+      });
+    }
+
     await this.collection.createIndex({ ownerId: 1 });
     await this.collection.createIndex({ createdAt: -1 });
   }

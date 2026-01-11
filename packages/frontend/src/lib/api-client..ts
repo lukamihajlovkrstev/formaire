@@ -17,5 +17,9 @@ export async function api(endpoint: string, options: RequestInit = {}) {
     throw new Error(error.error);
   }
 
-  return response.json();
+  try {
+    return await response.json();
+  } catch {
+    return null;
+  }
 }

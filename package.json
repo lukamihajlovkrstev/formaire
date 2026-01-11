@@ -4,11 +4,16 @@
   "private": true,
   "scripts": {
     "dev": "docker compose up",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "seed": "tsx ./scripts/seed.ts"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.2.0",
     "@tanstack/router-devtools": "^1.145.7",
     "@tanstack/router-plugin": "^1.145.7",
+    "@types/node": "^25.0.3",
+    "dotenv": "^17.2.3",
+    "mongodb": "^7.0.0",
     "prettier": "^3.7.4"
   },
   "dependencies": {

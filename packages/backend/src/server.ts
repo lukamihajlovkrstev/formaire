@@ -1,6 +1,8 @@
 import { createApp } from './app.js';
 import { database } from './lib/database.js';
+import { FormService } from './services/form.service.js';
 import { SessionService } from './services/session.service.js';
+import { SubmissionService } from './services/submission.service.js';
 import { UserService } from './services/user.service.js';
 
 const startServer = async () => {
@@ -9,7 +11,11 @@ const startServer = async () => {
 
     const userService = new UserService();
     const sessionService = new SessionService();
+    const formService = new FormService();
+    const submissionService = new SubmissionService();
+    await submissionService.ensureIndexes();
     await userService.ensureIndexes();
+    await formService.ensureIndexes();
     await sessionService.ensureIndexes();
 
     const app = createApp();
