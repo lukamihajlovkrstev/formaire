@@ -84,3 +84,29 @@ export const updateFormSchema = z.object({
 });
 
 export type UpdateFormInput = z.infer<typeof updateFormSchema>;
+
+export const timelineItemSchema = z.object({
+  _id: z.string(),
+  count: z.number(),
+});
+
+export type TimelineItem = z.infer<typeof timelineItemSchema>;
+export type Timeline = TimelineItem[];
+
+export const statsSchema = z.object({
+  total: z.number(),
+  last24h: z.number(),
+  last7d: z.number(),
+  last30d: z.number(),
+  avgPerDay: z.string(),
+});
+
+export type Stats = z.infer<typeof statsSchema>;
+
+export const peakHourItemSchema = z.object({
+  _id: z.number().min(0).max(23),
+  count: z.number(),
+});
+
+export type PeakHourItem = z.infer<typeof peakHourItemSchema>;
+export type PeakHours = PeakHourItem[];
