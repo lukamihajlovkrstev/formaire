@@ -102,3 +102,11 @@ export const statsSchema = z.object({
 });
 
 export type Stats = z.infer<typeof statsSchema>;
+
+export const peakHourItemSchema = z.object({
+  _id: z.number().min(0).max(23),
+  count: z.number(),
+});
+
+export type PeakHourItem = z.infer<typeof peakHourItemSchema>;
+export type PeakHours = PeakHourItem[];

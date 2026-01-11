@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { protect } from '../middleware/auth.middleware';
 import {
+  peakHoursParamsSchema,
   statsParamsSchema,
   timelineParamsSchema,
   timelineQuerySchema,
@@ -37,6 +38,22 @@ router.get('/:formId/stats', async (req, res) => {
       return;
     }
     res.status(500).json({ error: 'Failed to get stats' });
+  }
+});
+
+router.get('/:formId/peak-hours', async (req, res) => {
+  try {
+    const { formId } = peakHoursParamsSchema.parse(req.params);
+    const results = await analyiticsService.peakHours(formId);
+    res.json(results);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      res
+        .status(400)
+        .json({ error: 'Validation error', details: error.issues });
+      return;
+    }
+    res.status(500).json({ error: 'Failed to get peak hours' });
   }
 });
 

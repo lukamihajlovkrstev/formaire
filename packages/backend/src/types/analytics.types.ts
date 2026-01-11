@@ -15,3 +15,7 @@ export const timelineQuerySchema = z.object({
 export const statsParamsSchema = z.object({
   formId: z.string().refine((id) => ObjectId.isValid(id), 'Invalid form ID'),
 });
+
+export const peakHoursParamsSchema = z.object({
+  formId: z.string().refine((id) => ObjectId.isValid(id), 'Invalid form ID'),
+});

@@ -1,6 +1,6 @@
 import { Collection, ObjectId } from 'mongodb';
 import { database } from '../lib/database';
-import { Stats, Submission, Timeline } from '@formaire/shared';
+import { PeakHours, Stats, Submission, Timeline } from '@formaire/shared';
 
 export class AnalyticsService {
   private get collection(): Collection<Submission> {
@@ -59,5 +59,26 @@ export class AnalyticsService {
       total,
       avgPerDay: (last30d / 30).toFixed(2),
     };
+  }
+
+  async peakHours(formId: string): Promise<PeakHours> {
+    const peakHours = (await this.collection
+      .aggregate([
+        {
+          $match: {
+            'meta.form': new ObjectId(formId),
+          },
+        },
+        {
+          $group: {
+            _id: { $hour: '$timestamp' },
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { count: -1 } },
+      ])
+      .toArray()) as PeakHours;
+
+    return peakHours;
   }
 }
