@@ -42,6 +42,7 @@ export class FormService {
       _id: new ObjectId(),
       title: title,
       ownerId,
+      columns: [],
       active: true,
       count: 0,
       createdAt: now,

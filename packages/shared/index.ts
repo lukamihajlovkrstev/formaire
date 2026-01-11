@@ -84,3 +84,11 @@ export const updateFormSchema = z.object({
 });
 
 export type UpdateFormInput = z.infer<typeof updateFormSchema>;
+
+export const timelineItemSchema = z.object({
+  _id: z.string(),
+  count: z.number(),
+});
+
+export type TimelineItem = z.infer<typeof timelineItemSchema>;
+export type Timeline = TimelineItem[];
