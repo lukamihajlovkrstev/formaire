@@ -1,6 +1,6 @@
 import { Collection, ObjectId } from 'mongodb';
 import { database } from '../lib/database';
-import { Submission, Timeline } from '@formaire/shared';
+import { Stats, Submission, Timeline } from '@formaire/shared';
 
 export class AnalyticsService {
   private get collection(): Collection<Submission> {
@@ -30,5 +30,34 @@ export class AnalyticsService {
       .toArray()) as Timeline;
 
     return timeline;
+  }
+
+  async stats(formId: string): Promise<Stats> {
+    const now = Date.now();
+    const [last24h, last7d, last30d, total] = await Promise.all([
+      this.collection.countDocuments({
+        'meta.form': new ObjectId(formId),
+        timestamp: { $gte: new Date(now - 24 * 60 * 60 * 1000) },
+      }),
+      this.collection.countDocuments({
+        'meta.form': new ObjectId(formId),
+        timestamp: { $gte: new Date(now - 7 * 24 * 60 * 60 * 1000) },
+      }),
+      this.collection.countDocuments({
+        'meta.form': new ObjectId(formId),
+        timestamp: { $gte: new Date(now - 30 * 24 * 60 * 60 * 1000) },
+      }),
+      this.collection.countDocuments({
+        'meta.form': new ObjectId(formId),
+      }),
+    ]);
+
+    return {
+      last24h,
+      last7d,
+      last30d,
+      total,
+      avgPerDay: (last30d / 30).toFixed(2),
+    };
   }
 }

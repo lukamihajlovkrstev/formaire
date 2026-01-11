@@ -11,3 +11,7 @@ export const timelineQuerySchema = z.object({
     .optional()
     .transform((val) => (val ? parseInt(val) : 30)),
 });
+
+export const statsParamsSchema = z.object({
+  formId: z.string().refine((id) => ObjectId.isValid(id), 'Invalid form ID'),
+});

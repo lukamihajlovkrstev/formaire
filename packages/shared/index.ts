@@ -92,3 +92,13 @@ export const timelineItemSchema = z.object({
 
 export type TimelineItem = z.infer<typeof timelineItemSchema>;
 export type Timeline = TimelineItem[];
+
+export const statsSchema = z.object({
+  total: z.number(),
+  last24h: z.number(),
+  last7d: z.number(),
+  last30d: z.number(),
+  avgPerDay: z.string(),
+});
+
+export type Stats = z.infer<typeof statsSchema>;
