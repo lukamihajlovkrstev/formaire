@@ -42,6 +42,7 @@ import { logoutMutation, sessionQuery } from '@/queries/auth';
 import { getInitials } from '@/lib/utils';
 import { OpenContext } from '@/components/providers';
 import { queryClient } from '@/lib/query-client';
+import { AnalyticsDialog } from '@/components/analytics';
 
 export const Route = createFileRoute('/_protected/forms')({
   component: FormsLayout,
@@ -63,6 +64,7 @@ export const Route = createFileRoute('/_protected/forms')({
 
 function FormsLayout() {
   const [open, setOpen] = useState(false);
+  const [openDetails, setOpenDetails] = useState(false);
   const [title, setTitle] = useState('');
   const [search, setSearch] = useState('');
   const [target, setTarget] = useState<null | string>(null);
@@ -146,6 +148,11 @@ function FormsLayout() {
   return (
     <OpenContext.Provider value={{ open, setOpen }}>
       <SidebarProvider>
+        <AnalyticsDialog
+          formId={id as string}
+          open={openDetails}
+          setOpen={setOpenDetails}
+        />
         <Dialog open={open} onOpenChange={(val) => !isPending && setOpen(val)}>
           <DialogContent className="sm:max-w-md">
             <form onSubmit={submit}>
@@ -300,7 +307,14 @@ function FormsLayout() {
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <div className="flex w-full justify-end">
-              <Button variant="ghost" size="icon-sm">
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => {
+                  if (id == null) return;
+                  setOpenDetails(true);
+                }}
+              >
                 <Info className="size-4" />
               </Button>
             </div>
