@@ -20,6 +20,7 @@ import { deleteSubmission, getSubmissions } from '@/queries/forms';
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { ListX } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 
 export const Route = createFileRoute('/_protected/forms/$id')({
   component: RouteComponent,
@@ -44,6 +45,30 @@ function RouteComponent() {
 
   const columns = data?.pages[0]?.columns || [];
   const submissions = data?.pages.flatMap((p) => p.submissions) || [];
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!hasNextPage) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          fetchNextPage();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '200px',
+      },
+    );
+
+    const el = loadMoreRef.current;
+    if (el) observer.observe(el);
+
+    return () => {
+      if (el) observer.unobserve(el);
+    };
+  }, [fetchNextPage, hasNextPage]);
 
   return (
     <div className="flex flex-col h-full w-full overflow-hidden isolate">
@@ -76,58 +101,61 @@ function RouteComponent() {
             </Empty>
           </div>
         ) : (
-          <Table className="w-max min-w-full border-separate border-spacing-0">
-            <TableHeader className="bg-background sticky top-0 z-20">
-              <TableRow className="hover:bg-transparent">
-                <TableHead className="min-w-45 bg-background border-b h-12">
-                  Timestamp
-                </TableHead>
-                {columns.map((column) => (
-                  <TableHead
-                    key={column}
-                    className="min-w-37.5 bg-background whitespace-nowrap border-b h-12"
-                  >
-                    {column.charAt(0).toUpperCase() + column.slice(1)}
+          <>
+            <Table className="w-max min-w-full border-separate border-spacing-0">
+              <TableHeader className="bg-background sticky top-0 z-20">
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className="min-w-45 bg-background border-b h-12">
+                    Timestamp
                   </TableHead>
-                ))}
-                <TableHead className="w-25 bg-background border-b h-12 border-l right-0 z-10 sticky"></TableHead>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {submissions.map((sub) => (
-                <TableRow key={sub._id?.toString()}>
-                  <TableCell className="min-w-45 border-b">
-                    {new Date(sub.timestamp).toLocaleString()}
-                  </TableCell>
-                  {columns.map((col) => (
-                    <TableCell
-                      key={col}
-                      className="min-w-37.5 max-w-75 truncate border-b"
+                  {columns.map((column) => (
+                    <TableHead
+                      key={column}
+                      className="min-w-37.5 bg-background whitespace-nowrap border-b h-12"
                     >
-                      {sub.data[col] !== undefined
-                        ? String(sub.data[col])
-                        : '-'}
-                    </TableCell>
+                      {column.charAt(0).toUpperCase() + column.slice(1)}
+                    </TableHead>
                   ))}
-                  <TableCell className="w-25 border-b flex justify-center sticky right-0 z-10 border-l bg-background">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        deleteSubmissionMutation.mutate({
-                          formId: id,
-                          submissionId: sub._id?.toString() as string,
-                        });
-                      }}
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
+                  <TableHead className="w-25 bg-background border-b h-12 border-l right-0 z-10 sticky"></TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+
+              <TableBody>
+                {submissions.map((sub) => (
+                  <TableRow key={sub._id?.toString()}>
+                    <TableCell className="min-w-45 border-b">
+                      {new Date(sub.timestamp).toLocaleString()}
+                    </TableCell>
+                    {columns.map((col) => (
+                      <TableCell
+                        key={col}
+                        className="min-w-37.5 max-w-75 truncate border-b"
+                      >
+                        {sub.data[col] !== undefined
+                          ? String(sub.data[col])
+                          : '-'}
+                      </TableCell>
+                    ))}
+                    <TableCell className="w-25 border-b flex justify-center sticky right-0 z-10 border-l bg-background">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          deleteSubmissionMutation.mutate({
+                            formId: id,
+                            submissionId: sub._id?.toString() as string,
+                          });
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            {hasNextPage && <div ref={loadMoreRef} className="h-1" />}
+          </>
         )}
       </div>
     </div>
