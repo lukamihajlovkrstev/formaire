@@ -104,7 +104,7 @@ export class SubmissionService {
         timeseries: {
           timeField: 'timestamp',
           metaField: 'meta',
-          granularity: 'seconds',
+          granularity: 'minutes',
         },
       });
     }

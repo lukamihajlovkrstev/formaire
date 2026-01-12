@@ -25,10 +25,9 @@ export class FormService {
     });
   }
 
-  async active(formId: string): Promise<Form | null> {
+  async exists(formId: string): Promise<Form | null> {
     return await this.forms.findOne({
       _id: new ObjectId(formId),
-      active: true,
     });
   }
 
@@ -51,7 +50,6 @@ export class FormService {
       title: title,
       ownerId,
       columns: [],
-      active: true,
       count: 0,
       createdAt: now,
       updatedAt: now,

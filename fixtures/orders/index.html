@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Marketing Form Test</title>
+    <title>Order Form Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       *,
@@ -78,8 +78,10 @@
   </head>
   <body>
     <div class="form-container">
-      <h1>Get in Touch</h1>
-      <p>Leave your details and we’ll get back to you shortly.</p>
+      <h1>Order your product</h1>
+      <p>
+        Leave your details and we'll send you your product as fast as possible.
+      </p>
 
       <form id="marketing-form">
         <label for="name">Full Name</label>
@@ -100,25 +102,25 @@
           required
         />
 
-        <label for="company">Company</label>
-        <input
-          id="company"
-          name="company"
-          type="text"
-          placeholder="Acme Inc."
-        />
-
         <label for="city">City</label>
         <input id="city" name="city" type="text" placeholder="Acme Inc." />
 
-        <label for="message">Message</label>
+        <label for="address">Address</label>
+        <input
+          id="address"
+          name="address"
+          type="text"
+          placeholder="Washington Boulevard 13a"
+        />
+
+        <label for="message">Custom instructions for the courier</label>
         <textarea
           id="message"
           name="message"
-          placeholder="Tell us what you're looking for..."
+          placeholder="Leave it by the door..."
         ></textarea>
 
-        <button type="submit">Request Info</button>
+        <button type="submit">Order now</button>
       </form>
     </div>
 
@@ -133,7 +135,7 @@
         const jsonData = Object.fromEntries(formData.entries());
 
         await fetch(
-          'http://localhost:4000/api/forms/6962ac5936931bb8e4c579ab',
+          'http://localhost:4000/api/forms/6964e265064ac946ad00e459',
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

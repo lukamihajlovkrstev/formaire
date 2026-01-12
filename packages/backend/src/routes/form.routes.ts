@@ -70,7 +70,7 @@ router.get('/:formId', async (req, res) => {
     const { formId } = formIdParamSchema.parse(req.params);
     const { limit, cursor } = paginatedSubmissionsQuerySchema.parse(req.query);
 
-    const exists = await formService.active(formId);
+    const exists = await formService.exists(formId);
     if (!exists) {
       res.status(404).json({ error: 'Form not found' });
       return;
@@ -96,7 +96,7 @@ router.post('/:formId', async (req, res) => {
     const { formId } = formIdParamSchema.parse(req.params);
     const data = submissionDataSchema.parse(req.body);
 
-    const exists = await formService.active(formId);
+    const exists = await formService.exists(formId);
     if (!exists) {
       res.status(404).json({ error: 'Form not found' });
       return;

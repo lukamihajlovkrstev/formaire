@@ -58,7 +58,6 @@ export const formSchema = z.object({
     .min(1, 'Title is required')
     .max(200, 'Title must be 200 characters or less'),
   ownerId: z.instanceof(ObjectId),
-  active: z.boolean(),
   count: z.number().default(0),
   columns: z.array(z.string()).default([]),
   createdAt: z.date(),

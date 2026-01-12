@@ -186,7 +186,6 @@ async function seed() {
       const form = {
         title: `${template.title} ${i + 1}`,
         ownerId: USER_ID,
-        active: true,
         count: numSubmissions,
         columns: template.columns,
         createdAt: new Date(),
