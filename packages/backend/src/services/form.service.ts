@@ -77,23 +77,6 @@ export class FormService {
   }
 
   async ensureIndexes(): Promise<void> {
-    const exists = await database
-      .get()
-      .listCollections({
-        name: 'submissions',
-      })
-      .toArray();
-
-    if (exists.length === 0) {
-      await database.get().createCollection('submissions', {
-        timeseries: {
-          timeField: 'timestamp',
-          metaField: 'meta',
-          granularity: 'seconds',
-        },
-      });
-    }
-
     await this.forms.createIndex({ ownerId: 1 });
     await this.forms.createIndex({ createdAt: -1 });
   }
